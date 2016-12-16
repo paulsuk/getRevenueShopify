@@ -23,11 +23,10 @@ class MoneyCounter(object):
 		Each order is stored by OrderDetails and this method will return a list of OrderDetails
 		'''
 		orders = []
-		pageNumber = 1 # Using pageNumber 1 as default for now
+		pageNumber = 1
 
 		response = self._api_call(pageNumber)
 		while response:
-			print(pageNumber)
 			for order in response:
 				orderDetails = self.OrderDetails(order) 
 				orders.append(orderDetails)
