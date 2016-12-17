@@ -6,6 +6,7 @@ import urllib.request as request
 class MoneyCounter(object):
 	API_BASE_URL = 'https://shopicruit.myshopify.com/admin/orders.json?page='
 	ACCESS_TOKEN = 'c32313df0d0ef512ca64d5b336a0d7c6'
+	TotalRevenue = 0
 
 	class OrderDetails(object):
 		# Class will hold all relevant data for a single order, created using the response from API
@@ -50,8 +51,16 @@ class MoneyCounter(object):
 
 	def countMoney(self):
 		orders = self._get_data()
-		# Now need to go through the orders to sum up the prices, save and return it	
+		revenue = 0
 
+		for order in orders:
+			revenue += order.price
+
+		self.TotalRevenue = revenue
+
+	def get_Total_Revenue(self):
+		revenue = self.TotalRevenue
+		
 	def __init__(self):
 		# Set precision for decimal to be 2. 
 		decimal.getcontext().prec = 2
@@ -59,3 +68,6 @@ class MoneyCounter(object):
 if __name__ == '__main__':
 	moneyCounter = MoneyCounter()	
 	moneyCounter.countMoney()
+	print(moneyCounter.TotalRevenue)
+	pdb.set_trace()
+	print(moneyCounter.TotalRevenue)
