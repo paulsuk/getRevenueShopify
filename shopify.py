@@ -6,7 +6,10 @@ import urllib.request as request
 class MoneyCounter(object):
 	API_BASE_URL = 'https://shopicruit.myshopify.com/admin/orders.json?page='
 	ACCESS_TOKEN = 'c32313df0d0ef512ca64d5b336a0d7c6'
-	TotalRevenue = 0
+	totalRevenue = 0
+	numOrders = 0
+	orders = []
+
 
 	class OrderDetails(object):
 		# Class will hold all relevant data for a single order, created using the response from API
@@ -35,39 +38,35 @@ class MoneyCounter(object):
 			pageNumber += 1
 			response = self._api_call(pageNumber)
 
+		self.orders = orders
 		return orders
 
 	def _api_call(self, pageNumber):
 		# Method for calling on the API
 		url = self.API_BASE_URL + '%d&access_token=' % pageNumber + self.ACCESS_TOKEN 
 		req = request.Request(url)
-		orders = []
+		orders_json = []
 
 		with request.urlopen(req) as response:
-			#pdb.set_trace()
 			response_json = json.loads(response.read().decode('utf-8'))
-			orders = response_json['orders']
-		return orders
+			orders_json = response_json['orders']
+		return orders_json
 
 	def countMoney(self):
+		# Takes the orders and 
 		orders = self._get_data()
 		revenue = 0
-
 		for order in orders:
 			revenue += order.price
 
-		self.TotalRevenue = revenue
-
-	def get_Total_Revenue(self):
-		revenue = self.TotalRevenue
+		self.totalRevenue = revenue
+		self.numOrders = len(orders)
 		
 	def __init__(self):
 		# Set precision for decimal to be 2. 
 		decimal.getcontext().prec = 2
+		self.countMoney()
+		print("The total revenue is ${0:.2f} from {1} orders".format(self.totalRevenue, self.numOrders))
 
 if __name__ == '__main__':
-	moneyCounter = MoneyCounter()	
-	moneyCounter.countMoney()
-	print(moneyCounter.TotalRevenue)
-	pdb.set_trace()
-	print(moneyCounter.TotalRevenue)
+	moneyCounter = MoneyCounter()
