@@ -58,13 +58,14 @@ class MoneyCounter(object):
 		revenue = 0
 		for order in orders:
 			revenue += order.price
+			print(revenue)
 
 		self.totalRevenue = revenue
 		self.numOrders = len(orders)
 		
 	def __init__(self):
 		# Set precision for decimal to be 2. 
-		decimal.getcontext().prec = 2
+		decimal.getcontext().prec = 9
 		self.countMoney()
 		print("The total revenue is ${0:.2f} from {1} orders".format(self.totalRevenue, self.numOrders))
 
